@@ -4,7 +4,7 @@ services:
 before_install:
   - docker build -t ricky/react-test -f ./client/Dockerfile.dev ./client
 script:
-  - docker run ricky/react-test npm test -- --coverage
+  - docker run -e CI=true ricky/react-test npm test -- --coverage
 after_success:
   - docker build -t ricky/multi-client ./client
   - docker build -t ricky/multi-server ./server
