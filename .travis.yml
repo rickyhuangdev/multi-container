@@ -1,0 +1,17 @@
+sudo: required
+services:
+  - docker
+before_install:
+  - docker build -t ricky/react-test -f ./client/Dockerfile.dev ./client
+script:
+  - docker run ricky/react-test npm test -- --coverage
+after_success:
+  - docker build -t ricky/multi-client ./client
+  - docker build -t ricky/multi-server ./server
+  - docker build -t ricky/multi-nginx ./nginx
+  - docker build -t ricky/multi-worker ./worker
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  - docker push ricky/multi-client
+  - docker push ricky/multi-server
+  - docker push ricky/multi-nginx
+  - docker push ricky/multi-worker
